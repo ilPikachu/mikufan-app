@@ -8,6 +8,8 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.webkit.*
 import androidx.databinding.DataBindingUtil
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         }
          */
 
+        setupToolbar()
         setupWebView()
         setupSwipeRefresh()
         setupFAB()
@@ -48,6 +51,25 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_back -> binding.webview.goBack()
+            R.id.action_forward -> binding.webview.goForward()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupToolbar(){
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
