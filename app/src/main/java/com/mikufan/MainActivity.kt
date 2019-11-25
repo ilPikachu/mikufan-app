@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.*
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.mikufan.databinding.ActivityMainBinding
 import com.mikufan.util.network.ConnectivityCheck
@@ -30,14 +31,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        /*
-        if (!connectivityCheck.isConnected) {
-            // TODO: Show offline view
-        } else {
-            setupWebView()
-        }
-         */
 
         setupToolbar()
         setupWebView()
@@ -67,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setupToolbar(){
+    private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
     }
@@ -109,6 +102,11 @@ class MainActivity : AppCompatActivity() {
                         return true
                     }
 
+                    if (!connectivityCheck.isConnected) {
+                        Toast.makeText(applicationContext, context.getString(R.string.offline_message), Toast.LENGTH_LONG).show()
+                        return true
+                    }
+
                     if (url.contains(MIKUFAN_DOMAIN)) {
                         binding.webview.loadUrl(url)
                     } else {
@@ -120,7 +118,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            settings.javaScriptEnabled = true
+            settings.apply {
+                javaScriptEnabled = true
+                setAppCachePath(applicationContext.cacheDir.absolutePath)
+                allowFileAccess = true
+                setAppCacheEnabled(true)
+                cacheMode = WebSettings.LOAD_DEFAULT
+            }
+
+            if (!connectivityCheck.isConnected) {
+                settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            }
+
             loadUrl(MIKUFAN_URL)
         }
     }

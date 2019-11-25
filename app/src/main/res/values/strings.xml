@@ -3,4 +3,9 @@
 
     <string name="offline_text">You\'re offline</string>
     <string name="retry">Retry</string>
+    <string name="old_entries">Old Entries</string>
+    <string name="new_entries">New Entries</string>
+    <string name="back">Back</string>
+    <string name="forward">Forward</string>
+    <string name="offline_message">You\'re offline</string>
 </resources>

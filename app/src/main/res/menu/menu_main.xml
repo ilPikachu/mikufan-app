@@ -5,12 +5,24 @@
         android:id="@+id/action_back"
         android:icon="@drawable/ic_arrow_backward"
         app:showAsAction="ifRoom"
-        android:title="Compose">
+        android:title="@string/back">
+    </item>
+    <item
+        android:id="@+id/action_old_entries"
+        android:icon="@drawable/ic_fast_backward"
+        app:showAsAction="ifRoom"
+        android:title="@string/old_entries">
     </item>
     <item
         android:id="@+id/action_forward"
         android:icon="@drawable/ic_arrow_forward"
-        app:showAsAction="ifRoom|withText"
-        android:title="Profile">
+        app:showAsAction="never"
+        android:title="@string/forward">
+    </item>
+    <item
+        android:id="@+id/action_new_entries"
+        android:icon="@drawable/ic_fast_forward"
+        app:showAsAction="never"
+        android:title="@string/new_entries">
     </item>
 </menu>
