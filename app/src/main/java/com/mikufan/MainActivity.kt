@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         private const val MIKUFAN_URL = "https://www.mikufan.com/"
         private const val MIKUFAN_DOMAIN = "mikufan.com"
         private const val animationDuration: Long = 400
+        private const val fabAlpha = 0.5f
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_back -> binding.webview.goBack()
             R.id.action_forward -> binding.webview.goForward()
+            R.id.action_share -> shareCurrentPage(binding.webview.url)
         }
 
         return super.onOptionsItemSelected(item)
@@ -104,7 +106,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     if (!connectivityCheck.isConnected) {
-                        Toast.makeText(applicationContext, context.getString(R.string.offline_message), Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            applicationContext,
+                            context.getString(R.string.offline_message),
+                            Toast.LENGTH_LONG
+                        ).show()
                         return true
                     }
 
@@ -143,13 +149,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFAB() {
         binding.fab.apply {
-            alpha = 0.5f
+            alpha = fabAlpha
             setOnClickListener {
                 ObjectAnimator.ofInt(binding.webview, "ScrollY", binding.webview.scrollY, 0).apply {
                     duration = animationDuration
                 }.start()
             }
         }
+    }
+
+    private fun shareCurrentPage(url: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
 }

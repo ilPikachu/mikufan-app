@@ -8,10 +8,10 @@
         android:title="@string/back">
     </item>
     <item
-        android:id="@+id/action_old_entries"
-        android:icon="@drawable/ic_fast_backward"
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
         app:showAsAction="ifRoom"
-        android:title="@string/old_entries">
+        android:title="@string/share">
     </item>
     <item
         android:id="@+id/action_forward"
@@ -20,9 +20,9 @@
         android:title="@string/forward">
     </item>
     <item
-        android:id="@+id/action_new_entries"
-        android:icon="@drawable/ic_fast_forward"
-        app:showAsAction="never"
-        android:title="@string/new_entries">
+        android:id="@+id/action_goto_page"
+        android:icon="@drawable/ic_goto_page"
+        app:showAsAction="ifRoom"
+        android:title="@string/goto_page">
     </item>
 </menu>
