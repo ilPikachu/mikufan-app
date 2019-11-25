@@ -4,25 +4,26 @@
     <item
         android:id="@+id/action_back"
         android:icon="@drawable/ic_arrow_backward"
-        app:showAsAction="ifRoom"
-        android:title="@string/back">
-    </item>
+        android:title="@string/back"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_share"
         android:icon="@drawable/ic_share"
-        app:showAsAction="ifRoom"
-        android:title="@string/share">
-    </item>
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_forward"
         android:icon="@drawable/ic_arrow_forward"
-        app:showAsAction="never"
-        android:title="@string/forward">
-    </item>
+        android:title="@string/forward"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_goto_page"
         android:icon="@drawable/ic_goto_page"
-        app:showAsAction="ifRoom"
-        android:title="@string/goto_page">
-    </item>
+        android:title="@string/goto_page"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
 </menu>

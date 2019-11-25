@@ -15,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.*
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         private const val MIKUFAN_DOMAIN = "mikufan.com"
         private const val SCROLL_ANIMATION_DURATION: Long = 400
         private const val FAB_ALPHA = 0.5f
-        private const val ALERT_TITLE_SP = 20f
+        private const val DIALOG_TITLE_SP = 20f
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_forward -> binding.webview.goForward()
             R.id.action_share -> shareCurrentPage(binding.webview.url)
             R.id.action_goto_page -> showGotoPageDialog()
+            R.id.action_search -> showSearchDialog()
         }
 
         return super.onOptionsItemSelected(item)
@@ -199,7 +201,7 @@ class MainActivity : AppCompatActivity() {
             text = getString(R.string.goto_page)
             gravity = Gravity.CENTER
             setPadding(dpToPx(8))
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, ALERT_TITLE_SP)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, DIALOG_TITLE_SP)
             setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
             setTypeface(null, Typeface.BOLD)
         }
@@ -211,6 +213,34 @@ class MainActivity : AppCompatActivity() {
             setPositiveButton(getString(R.string.ok)) { _, _ ->
                 binding.webview.loadUrl(MIKUFAN_URL + "page/" + numberPicker.value)
                 lastPageIndex = numberPicker.value
+            }
+        }.show()
+    }
+
+    private fun showSearchDialog() {
+        val searchTitle: TextView = TextView(this).apply {
+            text = getString(R.string.search)
+            gravity = Gravity.CENTER
+            setPadding(dpToPx(8))
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, DIALOG_TITLE_SP)
+            setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+            setTypeface(null, Typeface.BOLD)
+        }
+
+        val editText: EditText = EditText(this).apply {
+            gravity = Gravity.CENTER
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, DIALOG_TITLE_SP)
+            setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            setTypeface(null, Typeface.BOLD)
+        }
+
+        AlertDialog.Builder(this).apply {
+            setCustomTitle(searchTitle)
+            setView(editText)
+            setNegativeButton(getString(R.string.cancel), null)
+            setPositiveButton(getString(R.string.ok)) { _, _ ->
+                val query = editText.text.toString().replace(" ", "+")
+                binding.webview.loadUrl("https://www.mikufan.com/?s=${query}&searchsubmit=")
             }
         }.show()
     }
