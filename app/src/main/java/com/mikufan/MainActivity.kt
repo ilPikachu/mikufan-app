@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         private const val SCROLL_ANIMATION_DURATION: Long = 400
         private const val FAB_ALPHA = 0.5f
         private const val DIALOG_TITLE_SP = 20f
+        private const val BUNDLE_WEBVIEW_URL = "BUNDLE_WEBVIEW_URL"
+
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -51,6 +53,20 @@ class MainActivity : AppCompatActivity() {
         setupWebView()
         setupSwipeRefresh()
         setupFAB()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        val restoredUrl = savedInstanceState.getString(BUNDLE_WEBVIEW_URL)
+        restoredUrl?.let {
+            binding.webview.loadUrl(it)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(BUNDLE_WEBVIEW_URL, binding.webview.url)
     }
 
     override fun onBackPressed() {
