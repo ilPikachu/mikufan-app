@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import com.mikufan.databinding.ActivityMainBinding
 import com.mikufan.util.network.ConnectivityCheck
 
+//TODO: Download entire main page html instead of relying on webview cache
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
@@ -141,10 +142,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFAB() {
-        binding.fab.setOnClickListener {
-            ObjectAnimator.ofInt(binding.webview, "ScrollY", binding.webview.scrollY, 0).apply {
-                duration = animationDuration
-            }.start()
+        binding.fab.apply {
+            alpha = 0.5f
+            setOnClickListener {
+                ObjectAnimator.ofInt(binding.webview, "ScrollY", binding.webview.scrollY, 0).apply {
+                    duration = animationDuration
+                }.start()
+            }
         }
     }
 
