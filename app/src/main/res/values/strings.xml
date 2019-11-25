@@ -8,4 +8,6 @@
     <string name="share">Share</string>
     <string name="goto_page">Go to page</string>
     <string name="offline_message">You\'re offline</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>

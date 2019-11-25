@@ -10,14 +10,13 @@ import android.net.NetworkInfo
  */
 class ConnectivityCheck(private val context: Context) {
 
-    //TODO: Fix depracted API
+    //TODO: fix deprecated API
     val isConnected: Boolean
         get() {
             val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-                    ?: return false
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
 
-            val activeNetwork = connectivityManager.activeNetworkInfo
-            return activeNetwork != null && activeNetwork.isConnectedOrConnecting
+            val activeNetwork = connectivityManager?.activeNetworkInfo
+            return activeNetwork?.isConnectedOrConnecting ?: false
         }
 }

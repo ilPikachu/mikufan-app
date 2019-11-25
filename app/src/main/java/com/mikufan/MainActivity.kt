@@ -4,18 +4,27 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.*
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import androidx.databinding.DataBindingUtil
 import com.mikufan.databinding.ActivityMainBinding
+import com.mikufan.util.extension.dpToPx
 import com.mikufan.util.network.ConnectivityCheck
+import com.shawnlin.numberpicker.NumberPicker
 
 //TODO: Download entire main page html instead of relying on webview cache
 class MainActivity : AppCompatActivity() {
@@ -23,12 +32,15 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
         private const val MIKUFAN_URL = "https://www.mikufan.com/"
         private const val MIKUFAN_DOMAIN = "mikufan.com"
-        private const val animationDuration: Long = 400
-        private const val fabAlpha = 0.5f
+        private const val SCROLL_ANIMATION_DURATION: Long = 400
+        private const val FAB_ALPHA = 0.5f
+        private const val ALERT_TITLE_SP = 20f
     }
 
     private lateinit var binding: ActivityMainBinding
     private val connectivityCheck = ConnectivityCheck(this)
+
+    private var lastPageIndex = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +70,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_back -> binding.webview.goBack()
             R.id.action_forward -> binding.webview.goForward()
             R.id.action_share -> shareCurrentPage(binding.webview.url)
+            R.id.action_goto_page -> showGotoPageDialog()
         }
 
         return super.onOptionsItemSelected(item)
@@ -66,6 +79,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.setOnClickListener {
+            binding.webview.loadUrl(MIKUFAN_URL)
+            lastPageIndex = 1
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -109,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(
                             applicationContext,
                             context.getString(R.string.offline_message),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                         return true
                     }
@@ -149,10 +166,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFAB() {
         binding.fab.apply {
-            alpha = fabAlpha
+            alpha = FAB_ALPHA
             setOnClickListener {
                 ObjectAnimator.ofInt(binding.webview, "ScrollY", binding.webview.scrollY, 0).apply {
-                    duration = animationDuration
+                    duration = SCROLL_ANIMATION_DURATION
                 }.start()
             }
         }
@@ -167,6 +184,35 @@ class MainActivity : AppCompatActivity() {
 
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
+    }
+
+    private fun showGotoPageDialog() {
+        val numberPicker: NumberPicker = NumberPicker(this).apply {
+            minValue = 1
+            value = lastPageIndex
+            textColor = ContextCompat.getColor(context, R.color.colorPrimary)
+            dividerColor = ContextCompat.getColor(context, R.color.colorAccent)
+            selectedTextColor = ContextCompat.getColor(context, R.color.colorAccent)
+        }
+
+        val alertTitle: TextView = TextView(this).apply {
+            text = getString(R.string.goto_page)
+            gravity = Gravity.CENTER
+            setPadding(dpToPx(8))
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, ALERT_TITLE_SP)
+            setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+            setTypeface(null, Typeface.BOLD)
+        }
+
+        AlertDialog.Builder(this).apply {
+            setCustomTitle(alertTitle)
+            setView(numberPicker)
+            setNegativeButton(getString(R.string.cancel), null)
+            setPositiveButton(getString(R.string.ok)) { _, _ ->
+                binding.webview.loadUrl(MIKUFAN_URL + "page/" + numberPicker.value)
+                lastPageIndex = numberPicker.value
+            }
+        }.show()
     }
 
 }

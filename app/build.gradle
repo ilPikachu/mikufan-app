@@ -37,4 +37,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'com.google.android.material:material:1.2.0-alpha02'
     implementation 'com.github.rhlff:NestedScrollWebView:v1.0.2'
+    implementation 'com.shawnlin:number-picker:2.4.8'
 }
