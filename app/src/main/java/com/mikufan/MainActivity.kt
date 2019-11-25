@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
         binding.toolbarTitle.setOnClickListener {
             binding.webview.loadUrl(MIKUFAN_URL)
             lastPageIndex = 1
