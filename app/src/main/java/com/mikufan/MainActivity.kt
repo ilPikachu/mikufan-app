@@ -17,11 +17,11 @@ import android.view.View
 import android.webkit.*
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.databinding.DataBindingUtil
+import com.google.android.material.snackbar.Snackbar
 import com.mikufan.databinding.ActivityMainBinding
 import com.mikufan.util.extension.dpToPx
 import com.mikufan.util.network.ConnectivityCheck
@@ -130,8 +130,9 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     super.onReceivedError(view, request, error)
                     Log.e(TAG, "onReceivedError $error")
-                    // TODO: Show Something went wrong view, variation of offline view
                     binding.progressBar.visibility = View.GONE
+                    // TODO: Show Something went wrong view, variation of offline view
+                    showOfflineSnackBar()
                 }
 
 
@@ -142,11 +143,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     if (!connectivityCheck.isConnected) {
-                        Toast.makeText(
-                            applicationContext,
-                            context.getString(R.string.offline_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showOfflineSnackBar()
                         return true
                     }
 
@@ -178,8 +175,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSwipeRefresh() {
-        binding.swipeRefresh.setOnRefreshListener {
-            binding.webview.reload()
+        binding.swipeRefresh.apply {
+            setColorSchemeColors(
+                ContextCompat.getColor(
+                    context,
+                    R.color.colorPrimary
+                )
+            )
+            setOnRefreshListener {
+                binding.webview.reload()
+            }
         }
     }
 
@@ -259,6 +264,16 @@ class MainActivity : AppCompatActivity() {
                 val query = editText.text.toString().replace(" ", "+")
                 binding.webview.loadUrl("https://www.mikufan.com/?s=${query}&searchsubmit=")
             }
+        }.show()
+    }
+
+    private fun showOfflineSnackBar() {
+        Snackbar.make(
+            binding.root,
+            R.string.offline_message, Snackbar.LENGTH_SHORT
+        ).apply {
+            setBackgroundTint(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+            setAction(R.string.retry) { binding.webview.reload() }
         }.show()
     }
 

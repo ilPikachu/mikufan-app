@@ -17,7 +17,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimaryDark"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                app:layout_scrollFlags="scroll|snap|enterAlways">
+                app:layout_scrollFlags="scroll|enterAlways">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -49,10 +49,10 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.tobiasrohloff.view.NestedScrollWebView
+            <com.mikufan.util.view.NestedScrollWebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
