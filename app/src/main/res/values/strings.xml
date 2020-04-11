@@ -4,11 +4,14 @@
     <string name="offline_text">You\'re offline</string>
     <string name="retry">Retry</string>
     <string name="back">Back</string>
-    <string name="forward">Forward</string>
+    <string name="forward">Forward</string>r
     <string name="share">Share</string>
     <string name="goto_page">Go to page</string>
     <string name="search">Search</string>
-    <string name="offline_message">You\'re offline</string>
+    <string name="offline_title">You\'re offline</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="exit_app">Exit the app</string>
+    <string name="offline_message">You can still view the cached page</string>
+
 </resources>

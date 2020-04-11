@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         private const val SCROLL_ANIMATION_DURATION: Long = 400
         private const val FAB_ALPHA = 0.5f
         private const val DIALOG_TITLE_SP = 20f
+        private const val DIALOG_MESSAGE_SP = 18f
         private const val BUNDLE_WEBVIEW_URL = "BUNDLE_WEBVIEW_URL"
 
     }
@@ -70,7 +71,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (binding.webview.canGoBack()) {
+        if (!connectivityCheck.isConnected) {
+            showOfflineExitDialog()
+        } else if (binding.webview.canGoBack()) {
             binding.webview.goBack()
         } else {
             super.onBackPressed()
@@ -83,12 +86,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_back -> binding.webview.goBack()
-            R.id.action_forward -> binding.webview.goForward()
-            R.id.action_share -> shareCurrentPage(binding.webview.url)
-            R.id.action_goto_page -> showGotoPageDialog()
-            R.id.action_search -> showSearchDialog()
+        if (!connectivityCheck.isConnected) {
+            showOfflineSnackBar()
+        } else {
+            when (item.itemId) {
+                R.id.action_back -> binding.webview.goBack()
+                R.id.action_forward -> binding.webview.goForward()
+                R.id.action_share -> shareCurrentPage(binding.webview.url)
+                R.id.action_goto_page -> showGotoPageDialog()
+                R.id.action_search -> showSearchDialog()
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -99,8 +106,12 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         binding.toolbarTitle.setOnClickListener {
-            binding.webview.loadUrl(MIKUFAN_URL)
-            lastPageIndex = 1
+            if (!connectivityCheck.isConnected) {
+                showOfflineSnackBar()
+            } else {
+                binding.webview.loadUrl(MIKUFAN_URL)
+                lastPageIndex = 1
+            }
         }
     }
 
@@ -131,8 +142,6 @@ class MainActivity : AppCompatActivity() {
                     super.onReceivedError(view, request, error)
                     Log.e(TAG, "onReceivedError $error")
                     binding.progressBar.visibility = View.GONE
-                    // TODO: Show Something went wrong view, variation of offline view
-                    showOfflineSnackBar()
                 }
 
 
@@ -179,11 +188,18 @@ class MainActivity : AppCompatActivity() {
             setColorSchemeColors(
                 ContextCompat.getColor(
                     context,
-                    R.color.colorPrimary
+                    R.color.colorAccent
                 )
             )
             setOnRefreshListener {
-                binding.webview.reload()
+                if (!connectivityCheck.isConnected) {
+                    showOfflineSnackBar()
+                    if (isRefreshing) {
+                        isRefreshing = false
+                    }
+                } else {
+                    binding.webview.reload()
+                }
             }
         }
     }
@@ -267,13 +283,46 @@ class MainActivity : AppCompatActivity() {
         }.show()
     }
 
+    private fun showOfflineExitDialog(){
+        val title: TextView = TextView(this).apply {
+            setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(8))
+            text = getString(R.string.offline_title)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, DIALOG_TITLE_SP)
+            setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+            setTypeface(null, Typeface.BOLD)
+        }
+
+        val message: TextView = TextView(this).apply {
+            setPadding(dpToPx(16), 0, dpToPx(16), 0)
+            text = getString(R.string.offline_message)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, DIALOG_MESSAGE_SP)
+            setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+            setTypeface(null, Typeface.NORMAL)
+        }
+
+        AlertDialog.Builder(this).apply {
+            setCustomTitle(title)
+            setView(message)
+            setNegativeButton(getString(R.string.cancel), null)
+            setPositiveButton(getString(R.string.exit_app)) { _, _ ->
+                super.onBackPressed()
+            }
+        }.show()
+    }
+
     private fun showOfflineSnackBar() {
         Snackbar.make(
             binding.root,
-            R.string.offline_message, Snackbar.LENGTH_SHORT
+            R.string.offline_title, Snackbar.LENGTH_SHORT
         ).apply {
             setBackgroundTint(ContextCompat.getColor(context, R.color.colorPrimaryDark))
-            setAction(R.string.retry) { binding.webview.reload() }
+            setAction(R.string.retry) {
+                if (!connectivityCheck.isConnected) {
+                    showOfflineSnackBar()
+                } else {
+                    binding.webview.reload()
+                }
+            }
         }.show()
     }
 
