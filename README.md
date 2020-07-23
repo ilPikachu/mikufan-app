@@ -1,8 +1,6 @@
 # miku-fan-app
 Unofficial miku fan app for https://www.mikufan.com/ 
 
-Playstore: https://play.google.com/store/apps/details?id=com.mikufan
-
 Built using Webview wrapper, adds additional helpful short cut features compare to the mobile site.
 
 ## Demo
